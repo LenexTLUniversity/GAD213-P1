@@ -9,9 +9,10 @@ public class PlayerMovement : MonoBehaviour
     public float maxHoldTime = 1f;           // Maximum time space can be held for full jump height
     public float horizontalJumpForce = 5f;   // Horizontal force applied during jump
     public float gravityScale = 2.5f;        // Gravity scale for faster falling
+    public float smallBounceForce = 1f;      // Small bounce force for landing
+    public float wallBounceMultiplier = 0.5f; // Multiplier for bounce back from walls
     public bool isHoldingJump = false;      // Track if the player is holding the space bar
     public float holdTime;                  // How long the space bar is held
-
 
     public Rigidbody2D rb;
 
@@ -79,12 +80,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Ground check: This can be modified with a ground layer check or raycast
+    // Small bounce when landing
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+
+            // Apply a small upward force for a subtle bounce
+            rb.velocity = new Vector2(rb.velocity.x, smallBounceForce);
+        }
+
+        // Bounce back if hitting a wall
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            // Calculate bounce force based on jump force
+            float bounceBackForce = Mathf.Lerp(minJumpForce, maxJumpForce, holdTime / maxHoldTime) * wallBounceMultiplier;
+
+            // Apply bounce back in the opposite direction of facing
+            if (facingRight)
+            {
+                rb.velocity = new Vector2(-bounceBackForce, rb.velocity.y);  // Bounce left
+            }
+            else
+            {
+                rb.velocity = new Vector2(bounceBackForce, rb.velocity.y);  // Bounce right
+            }
         }
     }
 
