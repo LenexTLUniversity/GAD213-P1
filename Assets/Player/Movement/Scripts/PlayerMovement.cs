@@ -9,11 +9,13 @@ public class PlayerMovement : MonoBehaviour
     public float maxHoldTime = 1f;           // Maximum time space can be held for full jump height
     public float horizontalJumpForce = 5f;   // Horizontal force applied during jump
     public float gravityScale = 2.5f;        // Gravity scale for faster falling
+    public bool isHoldingJump = false;      // Track if the player is holding the space bar
+    public float holdTime;                  // How long the space bar is held
 
-    private Rigidbody2D rb;
+
+    public Rigidbody2D rb;
+
     private bool isGrounded = false;
-    private bool isHoldingJump = false;      // Track if the player is holding the space bar
-    private float holdTime;                  // How long the space bar is held
     private bool facingRight = true;         // Keep track of the direction
 
     void Start()
